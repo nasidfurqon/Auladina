@@ -1,26 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.get("/guru", async(req, res)=>{
-    try {
-      const [rows] = await db.query("SELECT * FROM guru");
-      res.json({
-        success: true,
-        data: rows,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-      });
-    }
-})
+router.get("/guru", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM guru");
+    res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
 
 //2
-router.get("/role", async (req, res) => {
+router.get("/role", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM role");
     res.json({
@@ -37,7 +38,7 @@ router.get("/role", async (req, res) => {
 });
 
 //3
-router.get("/sekolah", async (req, res) => {
+router.get("/sekolah", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM sekolah");
     res.json({
@@ -54,7 +55,7 @@ router.get("/sekolah", async (req, res) => {
 });
 
 //4
-router.get("/siswa", async (req, res) => {
+router.get("/siswa", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM siswa");
     res.json({
@@ -71,7 +72,7 @@ router.get("/siswa", async (req, res) => {
 });
 
 //5
-router.get("/pengampu", async (req, res) => {
+router.get("/pengampu", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM pengampu");
     res.json({
@@ -88,7 +89,7 @@ router.get("/pengampu", async (req, res) => {
 });
 
 //6
-router.get("/fase", async (req, res) => {
+router.get("/fase", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM fase");
     res.json({
@@ -105,7 +106,7 @@ router.get("/fase", async (req, res) => {
 });
 
 //7
-router.get("/dimensi", async (req, res) => {  
+router.get("/dimensi", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM dimensi");
     res.json({
@@ -122,7 +123,7 @@ router.get("/dimensi", async (req, res) => {
 });
 
 //8
-router.get("/elemen", async (req, res) => {
+router.get("/elemen", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM elemen");
     res.json({
@@ -139,7 +140,7 @@ router.get("/elemen", async (req, res) => {
 });
 
 //9
-router.get("/sub_elemen", async (req, res) => {
+router.get("/sub_elemen", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM sub_elemen");
     res.json({
@@ -156,7 +157,7 @@ router.get("/sub_elemen", async (req, res) => {
 });
 
 //10
-router.get("/capaian", async (req, res) => {
+router.get("/capaian", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM capaian");
     res.json({
@@ -173,7 +174,7 @@ router.get("/capaian", async (req, res) => {
 });
 
 //11
-router.get("/assesment", async (req, res) => {
+router.get("/assesment", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM assesment");
     res.json({
@@ -190,7 +191,7 @@ router.get("/assesment", async (req, res) => {
 });
 
 //12
-router.get("/nilai", async (req, res) => {  
+router.get("/nilai", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM nilai");
     res.json({
@@ -207,7 +208,7 @@ router.get("/nilai", async (req, res) => {
 });
 
 //13
-router.get("/kelas", async (req, res) => {
+router.get("/kelas", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM kelas");
     res.json({

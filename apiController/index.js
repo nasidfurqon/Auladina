@@ -9,13 +9,14 @@ const listRouter = require("./routes/listRouter");
 const updateRouter = require("./routes/updateRouter");
 const addRouter = require("./routes/addRouter");
 const deleteRouter = require("./routes/deleteRouter");
+const authRouter = require("./routes/authRouter");
 
 app.use("/view", viewRouter);
 app.use("/list", listRouter);
 app.use("/update", updateRouter);
 app.use("/add", addRouter);
 app.use("/delete", deleteRouter);
-
+app.use("/auth", authRouter);
 
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");

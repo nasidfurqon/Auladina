@@ -3,9 +3,10 @@ const router = express.Router();
 const db = require("../db");
 const round = 10;
 const bcrypt = require('bcrypt');
+const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.put("/guru/:id", async(req, res)=>{
+router.put("/guru/:id", verifyToken, async(req, res)=>{
     const {id} = req.params;
 
     try{
@@ -37,7 +38,7 @@ router.put("/guru/:id", async(req, res)=>{
 });
 
 //2
-router.put("/role/:id", async (req, res) => {
+router.put("/role/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -70,7 +71,7 @@ router.put("/role/:id", async (req, res) => {
 });
 
 //3
-router.put("/sekolah/:id", async (req, res) => {
+router.put("/sekolah/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -104,7 +105,7 @@ router.put("/sekolah/:id", async (req, res) => {
 });
 
 //4
-router.put("/siswa/:id", async (req, res) => {
+router.put("/siswa/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -141,7 +142,7 @@ router.put("/siswa/:id", async (req, res) => {
 });
   
 //5
-router.put("/kelas/:id", async (req, res) => {
+router.put("/kelas/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -177,7 +178,7 @@ router.put("/kelas/:id", async (req, res) => {
 });
 
 //6
-router.put("/pengampu/:id", async (req, res) => {
+router.put("/pengampu/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -210,7 +211,7 @@ router.put("/pengampu/:id", async (req, res) => {
 });
 
 //7
-router.put("/fase/:id", async (req, res) => {
+router.put("/fase/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -242,7 +243,7 @@ router.put("/fase/:id", async (req, res) => {
 });
 
 //8
-router.put("/dimensi/:id", async (req, res) => {
+router.put("/dimensi/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -273,7 +274,7 @@ router.put("/dimensi/:id", async (req, res) => {
 });
 
 //9
-router.put("/elemen/:id", async (req, res) => {
+router.put("/elemen/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -305,7 +306,7 @@ router.put("/elemen/:id", async (req, res) => {
 });
 
 //10
-router.put("/sub_elemen/:id", async (req, res) => {
+router.put("/sub_elemen/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -337,7 +338,7 @@ router.put("/sub_elemen/:id", async (req, res) => {
 });
 
 //11
-router.put("/capaian/:id", async (req, res) => {
+router.put("/capaian/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -370,7 +371,7 @@ router.put("/capaian/:id", async (req, res) => {
 });
 
 //12
-router.put("/assessment/:id", async (req, res) => {
+router.put("/assessment/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -404,7 +405,7 @@ router.put("/assessment/:id", async (req, res) => {
 });
 
 //13
-router.put("/nilai/:id", async (req, res) => {
+router.put("/nilai/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
 
     try {

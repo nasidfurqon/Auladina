@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.delete("/guru/:id", async(req, res)=>{
+router.delete("/guru/:id", verifyToken, async(req, res)=>{
     try{
         const [result] = await db.query("DELETE FROM guru WHERE id_guru = ?", [
             req.params.id,
@@ -22,7 +23,7 @@ router.delete("/guru/:id", async(req, res)=>{
 });
 
 //2
-router.delete("/role/:id", async (req, res) => {
+router.delete("/role/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM role WHERE id_role = ?", [
       req.params.id,
@@ -43,7 +44,7 @@ router.delete("/role/:id", async (req, res) => {
 });
 
 //3
-router.delete("/sekolah/:id", async (req, res) => {
+router.delete("/sekolah/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM sekolah WHERE id_sekolah = ?", [
       req.params.id,
@@ -64,7 +65,7 @@ router.delete("/sekolah/:id", async (req, res) => {
 });
   
 //4
-router.delete("/siswa/:id", async (req, res) => {
+router.delete("/siswa/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM siswa WHERE id_siswa = ?", [
       req.params.id,
@@ -94,7 +95,7 @@ router.delete("/siswa/:id", async (req, res) => {
 // assesment
 // nilai
 //5
-router.delete("/kelas/:id", async (req, res) => {
+router.delete("/kelas/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM kelas WHERE id_kelas = ?", [
       req.params.id,
@@ -115,7 +116,7 @@ router.delete("/kelas/:id", async (req, res) => {
 });
 
 //6
-router.delete("/pengampu/:id", async (req, res) => {
+router.delete("/pengampu/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM pengampu WHERE id_pengampu = ?", [
       req.params.id,
@@ -136,7 +137,7 @@ router.delete("/pengampu/:id", async (req, res) => {
 });
 
 //7
-router.delete("/fase/:id", async (req, res) => {
+router.delete("/fase/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM fase WHERE id_fase = ?", [
       req.params.id,
@@ -157,7 +158,7 @@ router.delete("/fase/:id", async (req, res) => {
 });
 
 //8
-router.delete("/dimensi/:id", async (req, res) => {
+router.delete("/dimensi/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM dimensi WHERE id_dimensi = ?", [
       req.params.id,
@@ -178,7 +179,7 @@ router.delete("/dimensi/:id", async (req, res) => {
 });
 
 //9
-router.delete("/elemen/:id", async (req, res) => {
+router.delete("/elemen/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM elemen WHERE id_elemen = ?", [
       req.params.id,
@@ -199,7 +200,7 @@ router.delete("/elemen/:id", async (req, res) => {
 });
 
 //10
-router.delete("/sub_elemen/:id", async (req, res) => {
+router.delete("/sub_elemen/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM sub_elemen WHERE id_sub_elemen = ?", [
       req.params.id,
@@ -220,7 +221,7 @@ router.delete("/sub_elemen/:id", async (req, res) => {
 });
 
 //11
-router.delete("/capaian/:id", async (req, res) => {
+router.delete("/capaian/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM capaian WHERE id_capaian = ?", [
       req.params.id,
@@ -241,7 +242,7 @@ router.delete("/capaian/:id", async (req, res) => {
 });
 
 //12
-router.delete("/assesment/:id", async (req, res) => {
+router.delete("/assesment/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM assesment WHERE id_assesment = ?", [
       req.params.id,
@@ -262,7 +263,7 @@ router.delete("/assesment/:id", async (req, res) => {
 });
 
 //13
-router.delete("/nilai/:id", async (req, res) => {
+router.delete("/nilai/:id", verifyToken, async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM nilai WHERE id_nilai = ?", [
       req.params.id,

@@ -3,9 +3,10 @@ const router = express.Router();
 const db = require("../db");
 const round = 10;
 const bcrypt = require('bcrypt');
+const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.post("/guru", async(req, res)=>{
+router.post("/guru", verifyToken,  verifyToken, async(req, res)=>{
     try{
         const id_sekolah = req.body.id_sekolah ?? null;
         const nama = req.body.nama ?? null;
@@ -31,7 +32,7 @@ router.post("/guru", async(req, res)=>{
 });
 
 //2
-router.post("/role", async (req, res) => {
+router.post("/role", verifyToken, async (req, res) => {
   try {
     const nama_role = req.body.nama_role ?? null;
 
@@ -53,7 +54,7 @@ router.post("/role", async (req, res) => {
 });
 
 //3
-router.post("/sekolah", async (req, res) => {
+router.post("/sekolah", verifyToken, async (req, res) => {
   try {
     const nama_sekolah = req.body.nama_sekolah ?? null;
     const alamat = req.body.alamat ?? null;
@@ -76,7 +77,7 @@ router.post("/sekolah", async (req, res) => {
 });
 
 //4
-router.post("/siswa", async (req, res) => {
+router.post("/siswa", verifyToken, async (req, res) => {
   try {
     const id_kelas = req.body.id_kelas ?? null;
     const id_sekolah = req.body.id_sekolah ?? null;
@@ -101,7 +102,7 @@ router.post("/siswa", async (req, res) => {
 });
 
 //5
-router.post("/kelas", async(req, res)=>{
+router.post("/kelas", verifyToken, async(req, res)=>{
     try{
         const id_sekolah = req.body.id_sekolah ?? null;
         const id_fase = req.body.id_fase ?? null;
@@ -125,7 +126,7 @@ router.post("/kelas", async(req, res)=>{
 });
 
 //6
-router.post("/pengampu", async(req, res)=>{
+router.post("/pengampu", verifyToken, async(req, res)=>{
     try{
         const id_guru = req.body.id_guru ?? null;
         const id_kelas = req.body.id_kelas ?? null;
@@ -146,7 +147,7 @@ router.post("/pengampu", async(req, res)=>{
 });
 
 //7
-router.post("/fase", async(req, res)=>{
+router.post("/fase", verifyToken, async(req, res)=>{
     try{
         const nama_fase = req.body.nama_fase ?? null;
         const keterangan = req.body.keterangan ?? null;
@@ -166,7 +167,7 @@ router.post("/fase", async(req, res)=>{
 });
 
 //8
-router.post("/dimensi", async(req, res)=>{
+router.post("/dimensi", verifyToken, async(req, res)=>{
     try{
         const nama_dimensi = req.body.nama_dimensi ?? null;
 
@@ -185,7 +186,7 @@ router.post("/dimensi", async(req, res)=>{
 });
 
 //9
-router.post("/elemen", async(req, res)=>{
+router.post("/elemen", verifyToken, async(req, res)=>{
     try{
         const id_dimensi = req.body.id_dimensi ?? null;
         const nama_elemen = req.body.nama_elemen ?? null;
@@ -205,7 +206,7 @@ router.post("/elemen", async(req, res)=>{
 });
 
 //10
-router.post("/sub_elemen", async(req, res)=>{
+router.post("/sub_elemen", verifyToken, async(req, res)=>{
     try{
         const id_elemen = req.body.id_elemen ?? null;
         const nama_sub_elemen = req.body.nama_sub_elemen ?? null;
@@ -225,7 +226,7 @@ router.post("/sub_elemen", async(req, res)=>{
 });
 
 //11
-router.post("/capaian", async(req, res)=>{
+router.post("/capaian", verifyToken, async(req, res)=>{
     try{
         const id_sub_elemen = req.body.id_sub_elemen ?? null;
         const id_fase = req.body.id_fase ?? null;
@@ -246,7 +247,7 @@ router.post("/capaian", async(req, res)=>{
 });
 
 //12
-router.post("/assessment", async(req, res)=>{
+router.post("/assessment", verifyToken, async(req, res)=>{
     try{
         const id_capaian = req.body.id_capaian ?? null;
         const nama_assessment = req.body.nama_assessment ?? null;
@@ -268,7 +269,7 @@ router.post("/assessment", async(req, res)=>{
 });
 
 //13
-router.post("/nilai", async(req, res)=>{
+router.post("/nilai", verifyToken, async(req, res)=>{
     try{
         const id_siswa = req.body.id_siswa ?? null;
         const id_pengampu = req.body.id_pengampu ?? null;
