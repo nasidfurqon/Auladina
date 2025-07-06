@@ -27,4 +27,85 @@ router.get("/guru/:id", async (req, res) => {
       });
     }
 });
+
+
+router.get("/role/:id", async (req, res) => {
+    try {
+      const [rows] = await db.query("SELECT * FROM role WHERE id_role = ?", [
+        req.params.id,
+      ]);
+
+      if (rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Data not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: rows[0],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+});
+
+
+router.get("/sekolah/:id", async (req, res) => {
+    try {
+      const [rows] = await db.query("SELECT * FROM sekolah WHERE id_sekolah = ?", [
+        req.params.id,
+      ]);
+
+      if (rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Data not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: rows[0],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+});
+
+
+router.get("/siswa/:id", async (req, res) => {
+    try {
+      const [rows] = await db.query("SELECT * FROM siswa WHERE id_siswa = ?", [
+        req.params.id,
+      ]);
+
+      if (rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Data not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: rows[0],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+});
 module.exports = router;
