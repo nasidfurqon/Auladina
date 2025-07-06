@@ -20,7 +20,7 @@ router.post("/register", async(req, res)=>{
 
         const hashed = await bcrypt.hash(password_hash, round);
         const [result] = await db.query(
-            "INSERT INTO guru (nama, email, password_hash) VALUES (?, ?, ?)", [nama, email, password_hash]
+            "INSERT INTO guru (nama, email, password_hash) VALUES (?, ?, ?)", [nama, email, hashed]
         );
 
         res.status(200).json({success: true, message: "Registratsi is Successfull", id: result.insertId});
