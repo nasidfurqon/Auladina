@@ -4,7 +4,7 @@ const db = require("../db");
 
 router.get("/guru/:id", async (req, res) => {
     try {
-      const [rows] = await db.query("SELECT * FROM guru WHERE id = ?", [
+      const [rows] = await db.query("SELECT * FROM guru WHERE id_guru = ?", [
         req.params.id,
       ]);
 
