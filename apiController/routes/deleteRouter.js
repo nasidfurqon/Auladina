@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../db");
 
 //1
-router.post("/guru/:id", async(req, res)=>{
+router.delete("/guru/:id", async(req, res)=>{
     try{
         const [result] = await db.query("DELETE FROM guru WHERE id_guru = ?", [
             req.params.id,
@@ -22,7 +22,7 @@ router.post("/guru/:id", async(req, res)=>{
 });
 
 //2
-router.post("/role/:id", async (req, res) => {
+router.delete("/role/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM role WHERE id_role = ?", [
       req.params.id,
@@ -43,7 +43,7 @@ router.post("/role/:id", async (req, res) => {
 });
 
 //3
-router.post("/sekolah/:id", async (req, res) => {
+router.delete("/sekolah/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM sekolah WHERE id_sekolah = ?", [
       req.params.id,
@@ -64,7 +64,7 @@ router.post("/sekolah/:id", async (req, res) => {
 });
   
 //4
-router.post("/siswa/:id", async (req, res) => {
+router.delete("/siswa/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM siswa WHERE id_siswa = ?", [
       req.params.id,
@@ -84,17 +84,17 @@ router.post("/siswa/:id", async (req, res) => {
   }
 });
   
-kelas
-pengampu
-fase
-dimensi
-elemen
-sub_elemen
-capaian
-assesment
-nilai
+// kelas
+// pengampu
+// fase
+// dimensi
+// elemen
+// sub_elemen
+// capaian
+// assesment
+// nilai
 //5
-router.post("/kelas/:id", async (req, res) => {
+router.delete("/kelas/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM kelas WHERE id_kelas = ?", [
       req.params.id,
@@ -115,7 +115,7 @@ router.post("/kelas/:id", async (req, res) => {
 });
 
 //6
-router.post("/pengampu/:id", async (req, res) => {
+router.delete("/pengampu/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM pengampu WHERE id_pengampu = ?", [
       req.params.id,
@@ -136,7 +136,7 @@ router.post("/pengampu/:id", async (req, res) => {
 });
 
 //7
-router.post("/fase/:id", async (req, res) => {
+router.delete("/fase/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM fase WHERE id_fase = ?", [
       req.params.id,
@@ -157,7 +157,7 @@ router.post("/fase/:id", async (req, res) => {
 });
 
 //8
-router.post("/dimensi/:id", async (req, res) => {
+router.delete("/dimensi/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM dimensi WHERE id_dimensi = ?", [
       req.params.id,
@@ -178,7 +178,7 @@ router.post("/dimensi/:id", async (req, res) => {
 });
 
 //9
-router.post("/elemen/:id", async (req, res) => {
+router.delete("/elemen/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM elemen WHERE id_elemen = ?", [
       req.params.id,
@@ -199,7 +199,7 @@ router.post("/elemen/:id", async (req, res) => {
 });
 
 //10
-router.post("/sub_elemen/:id", async (req, res) => {
+router.delete("/sub_elemen/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM sub_elemen WHERE id_sub_elemen = ?", [
       req.params.id,
@@ -220,7 +220,7 @@ router.post("/sub_elemen/:id", async (req, res) => {
 });
 
 //11
-router.post("/capaian/:id", async (req, res) => {
+router.delete("/capaian/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM capaian WHERE id_capaian = ?", [
       req.params.id,
@@ -241,7 +241,7 @@ router.post("/capaian/:id", async (req, res) => {
 });
 
 //12
-router.post("/assesment/:id", async (req, res) => {
+router.delete("/assesment/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM assesment WHERE id_assesment = ?", [
       req.params.id,
@@ -262,7 +262,7 @@ router.post("/assesment/:id", async (req, res) => {
 });
 
 //13
-router.post("/nilai/:id", async (req, res) => {
+router.delete("/nilai/:id", async (req, res) => {
   try {
     const [result] = await db.query("DELETE FROM nilai WHERE id_nilai = ?", [
       req.params.id,

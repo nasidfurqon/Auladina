@@ -5,7 +5,7 @@ const round = 10;
 const bcrypt = require('bcrypt');
 
 //1
-router.post("/guru/:id", async(req, res)=>{
+router.put("/guru/:id", async(req, res)=>{
     const {id} = req.params;
 
     try{
@@ -37,7 +37,7 @@ router.post("/guru/:id", async(req, res)=>{
 });
 
 //2
-router.post("/role/:id", async (req, res) => {
+router.put("/role/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -70,7 +70,7 @@ router.post("/role/:id", async (req, res) => {
 });
 
 //3
-router.post("/sekolah/:id", async (req, res) => {
+router.put("/sekolah/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -104,7 +104,7 @@ router.post("/sekolah/:id", async (req, res) => {
 });
 
 //4
-router.post("/siswa/:id", async (req, res) => {
+router.put("/siswa/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -141,7 +141,7 @@ router.post("/siswa/:id", async (req, res) => {
 });
   
 //5
-router.post("/kelas/:id", async (req, res) => {
+router.put("/kelas/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -177,7 +177,7 @@ router.post("/kelas/:id", async (req, res) => {
 });
 
 //6
-router.post("/pengampu/:id", async (req, res) => {
+router.put("/pengampu/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -210,7 +210,7 @@ router.post("/pengampu/:id", async (req, res) => {
 });
 
 //7
-router.post("/fase/:id", async (req, res) => {
+router.put("/fase/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -242,7 +242,7 @@ router.post("/fase/:id", async (req, res) => {
 });
 
 //8
-router.post("/dimensi/:id", async (req, res) => {
+router.put("/dimensi/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -273,7 +273,7 @@ router.post("/dimensi/:id", async (req, res) => {
 });
 
 //9
-router.post("/elemen/:id", async (req, res) => {
+router.put("/elemen/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -305,7 +305,7 @@ router.post("/elemen/:id", async (req, res) => {
 });
 
 //10
-router.post("/sub_elemen/:id", async (req, res) => {
+router.put("/sub_elemen/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -337,7 +337,7 @@ router.post("/sub_elemen/:id", async (req, res) => {
 });
 
 //11
-router.post("/capaian/:id", async (req, res) => {
+router.put("/capaian/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -370,7 +370,7 @@ router.post("/capaian/:id", async (req, res) => {
 });
 
 //12
-router.post("/assessment/:id", async (req, res) => {
+router.put("/assessment/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -404,7 +404,7 @@ router.post("/assessment/:id", async (req, res) => {
 });
 
 //13
-router.post("/nilai/:id", async (req, res) => {
+router.put("/nilai/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
