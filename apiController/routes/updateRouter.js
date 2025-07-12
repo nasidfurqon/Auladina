@@ -420,13 +420,13 @@ router.put("/nilai/:id", verifyToken, async (req, res) => {
         }
         const id_siswa = req.body.id_siswa ?? existingData[0].id_siswa;
         const id_pengampu = req.body.id_pengampu ?? existingData[0].id_pengampu;
-        const id_assesment = req.body.id_assesment ?? existingData[0].id_assesment;
+        const id_assessment = req.body.id_assessment ?? existingData[0].id_assessment;
         const nilai = req.body.nilai ?? existingData[0].nilai;
         const tanggal_input = req.body.tanggal_input ?? existingData[0].tanggal_input;
 
         const [result] = await db.query(
-        "UPDATE nilai SET id_siswa = ?, id_pengampu = ?, id_assesment = ?, nilai = ?, tanggal_input = ? WHERE id_nilai = ?",
-        [id_siswa, id_pengampu, id_assesment, nilai, tanggal_input, id]
+        "UPDATE nilai SET id_siswa = ?, id_pengampu = ?, id_assessment = ?, nilai = ?, tanggal_input = ? WHERE id_nilai = ?",
+        [id_siswa, id_pengampu, id_assessment, nilai, tanggal_input, id]
         );
         res.status(200).json({
         success: true,

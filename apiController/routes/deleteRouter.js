@@ -92,7 +92,7 @@ router.delete("/siswa/:id", verifyToken, async (req, res) => {
 // elemen
 // sub_elemen
 // capaian
-// assesment
+// assessment
 // nilai
 //5
 router.delete("/kelas/:id", verifyToken, async (req, res) => {
@@ -242,9 +242,9 @@ router.delete("/capaian/:id", verifyToken, async (req, res) => {
 });
 
 //12
-router.delete("/assesment/:id", verifyToken, async (req, res) => {
+router.delete("/assessment/:id", verifyToken, async (req, res) => {
   try {
-    const [result] = await db.query("DELETE FROM assesment WHERE id_assesment = ?", [
+    const [result] = await db.query("DELETE FROM assessment WHERE id_assessment = ?", [
       req.params.id,
     ]);
     if (result.affectedRows === 0) {
@@ -252,10 +252,10 @@ router.delete("/assesment/:id", verifyToken, async (req, res) => {
         .status(404)
         .json({
           success: false,
-          message: "Failed Delete assesment: assesment not found",
+          message: "Failed Delete assessment: assessment not found",
         });
     }
-    res.json({ success: true, message: "assesment successfully deleted" });
+    res.json({ success: true, message: "assessment successfully deleted" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });

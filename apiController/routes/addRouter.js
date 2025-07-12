@@ -273,12 +273,12 @@ router.post("/nilai", verifyToken, async(req, res)=>{
     try{
         const id_siswa = req.body.id_siswa ?? null;
         const id_pengampu = req.body.id_pengampu ?? null;
-        const id_assesment = req.body.id_assesment ?? null;
+        const id_assessment = req.body.id_assessment ?? null;
         const nilai = req.body.nilai ?? null;
         const tanggal_input = req.body.tanggal_input ?? null;
 
-        const [result] = await db.query("INSERT INTO nilai (id_siswa, id_pengampu, id_assesment, nilai, tanggal_input) VALUES (?, ?, ?, ?, ?)",
-        [id_siswa, id_pengampu, id_assesment, nilai, tanggal_input]);
+        const [result] = await db.query("INSERT INTO nilai (id_siswa, id_pengampu, id_assessment, nilai, tanggal_input) VALUES (?, ?, ?, ?, ?)",
+        [id_siswa, id_pengampu, id_assessment, nilai, tanggal_input]);
         res.status(200).json({
           success: true, 
           message: "Successfully add nilai", 

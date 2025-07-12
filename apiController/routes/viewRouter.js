@@ -302,9 +302,9 @@ router.get("/capaian/:id", verifyToken, async (req, res) => {
 });
 
 //12
-router.get("/assesment/:id", verifyToken, async (req, res) => {
+router.get("/assessment/:id", verifyToken, async (req, res) => {
     try {
-      const [rows] = await db.query("SELECT * FROM assesment WHERE id_assesment = ?", [
+      const [rows] = await db.query("SELECT * FROM assessment WHERE id_assessment = ?", [
         req.params.id,
       ]);
 

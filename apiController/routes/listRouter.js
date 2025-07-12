@@ -174,9 +174,9 @@ router.get("/capaian", verifyToken, async (req, res) => {
 });
 
 //11
-router.get("/assesment", verifyToken, async (req, res) => {
+router.get("/assessment", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM assesment");
+    const [rows] = await db.query("SELECT * FROM assessment");
     res.json({
       success: true,
       data: rows,
