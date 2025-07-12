@@ -110,7 +110,7 @@ router.put("/siswa/:id", verifyToken, async (req, res) => {
 
     try {
         const [existingData] = await db.query(
-        "SELECT * FROM sisw where id_siswa = ?",
+        "SELECT * FROM siswa where id_siswa = ?",
         [id]
         );
         if (existingData.length === 0) {
