@@ -116,7 +116,7 @@ router.put("/siswa/:id", verifyToken, async (req, res) => {
         if (existingData.length === 0) {
         return res
             .status(404)
-            .json({ success: false, message: "sekolah not found" });
+            .json({ success: false, message: "siswa not found" });
         }
         const id_kelas = req.body.id_kelas ?? existingData[0].id_kelas;
         const id_sekolah = req.body.id_sekolah ?? existingData[0].id_sekolah;
