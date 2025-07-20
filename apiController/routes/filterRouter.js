@@ -79,3 +79,4 @@ router.get("/guru/:id/jumlah-siswa", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+module.exports = router;

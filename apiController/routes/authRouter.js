@@ -5,6 +5,7 @@ const db = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const round = 10;
+const sendVerificationEmail = require("../utils/mail");
 
 router.post("/register", async(req, res)=>{
     try{
@@ -20,8 +21,11 @@ router.post("/register", async(req, res)=>{
 
         const hashed = await bcrypt.hash(password_hash, round);
         const [result] = await db.query(
-            "INSERT INTO guru (nama, email, password_hash) VALUES (?, ?, ?)", [nama, email, hashed]
+            "INSERT INTO guru (nama, email, password_hash, is_verified) VALUES (?, ?, ?, ?)", [nama, email, hashed, 0]
         );
+
+        const token = jwt.sign({email}, process.env.JWT_SECRET, {expiresIn: "1h"}); 
+        await sendVerificationEmail(email, token);
 
         res.status(200).json({success: true, message: "Registratsi is Successfull", id: result.insertId});
     }
@@ -30,6 +34,21 @@ router.post("/register", async(req, res)=>{
         res.status(500).json({success: false, message: "Internal server error"});
     }
 })
+
+router.get("/verify", async (req, res) =>{
+    const { token } = req.query;
+
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const { email } = decoded;
+
+        await db.execute("UPDATE guru SET is_verified = ? WHERE email = ?", [1, email]);
+        res.send("Email successfully verified!");
+    }
+    catch (err) {
+        res.status(400).send("Invalid or expired token.");
+    }
+});
 
 router.post("/login", async(req, res)=>{
     try{
@@ -40,12 +59,16 @@ router.post("/login", async(req, res)=>{
             return res.status(401).json({success: false, message: "email not found"});
         }
 
-        const user = users[0];
+        const user = users[0]
+        if (user.is_verified[0] != 1)
+        return res
+            .status(403)
+            .json({ message: "Please verify your email" });
+
         const valid = await bcrypt.compare(password_hash, user.password_hash);
         if(!valid){
             return res.status(401).json({success: false, message: "Wrong password"})
         }
-
         const token = jwt.sign(
             {id: user.id_guru, email: user.email},
             process.env.JWT_SECRET,
