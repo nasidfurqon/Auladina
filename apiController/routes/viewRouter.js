@@ -166,7 +166,7 @@ router.get("/pengampu/:id", verifyToken, async (req, res) => {
 });
 
 //7
-router.get("fase/:id", verifyToken, async (req, res) => {
+router.get("/fase/:id", verifyToken, async (req, res) => {
     try {
       const [rows] = await db.query("SELECT * FROM fase WHERE id_fase = ?", [
         req.params.id,
