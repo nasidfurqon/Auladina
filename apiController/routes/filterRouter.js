@@ -80,3 +80,27 @@ router.get("/guru/:id/jumlah-siswa", verifyToken, async (req, res) => {
   }
 });
 module.exports = router;
+
+router.get("/assessment/:id/nilai", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM nilai WHERE id_assessment = ?",
+      [req.params.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+router.get("/siswa/:id/nilai", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM nilai WHERE id_siswa = ?",
+      [req.params.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
