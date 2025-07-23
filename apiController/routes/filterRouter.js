@@ -134,3 +134,28 @@ router.get("/nilai", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
+router.get("/siswa/:id_siswa/capaian/:id_capaian/nilai", verifyToken, async (req, res) => {
+  const { id_siswa, id_capaian } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      `SELECT 
+         n.id_nilai,
+         n.nilai,
+         n.tanggal_input,
+         a.nama_assessment,
+         a.deskripsi AS deskripsi_assessment,
+         a.bobot
+       FROM nilai n
+       JOIN assessment a ON n.id_assessment = a.id_assessment
+       WHERE n.id_siswa = ? AND a.id_capaian = ?`,
+      [id_siswa, id_capaian]
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
