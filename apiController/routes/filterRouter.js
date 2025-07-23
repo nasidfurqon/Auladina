@@ -104,3 +104,33 @@ router.get("/siswa/:id/nilai", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
+router.get("/nilai", verifyToken, async (req, res) => {
+  const { id_assessment, id_siswa } = req.query;
+
+  if (!id_assessment || !id_siswa) {
+    return res.status(400).json({
+      success: false,
+      message: "Parameter id_assessment dan id_siswa wajib diisi",
+    });
+  }
+
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM nilai WHERE id_assessment = ? AND id_siswa = ?",
+      [id_assessment, id_siswa]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Nilai tidak ditemukan untuk kombinasi yang diberikan",
+      });
+    }
+
+    res.json({ success: true, data: rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
