@@ -290,4 +290,26 @@ router.post("/nilai", verifyToken, async(req, res)=>{
         res.status(500).json({success: false, message: "Internal server error"});
     }
 });
+
+router.post("/capaian_kelas", verifyToken, async (req, res) => {
+  try {
+    const { nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas } = req.body;
+
+    const [result] = await db.query(
+      `INSERT INTO Capaian_kelas (nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas) 
+       VALUES (?, ?, ?, ?, ?)`,
+      [nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully added capaian_kelas",
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 module.exports = router;

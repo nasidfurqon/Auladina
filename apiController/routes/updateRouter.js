@@ -438,4 +438,34 @@ router.put("/nilai/:id", verifyToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+router.put("/capaian_kelas/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [existing] = await db.query("SELECT * FROM Capaian_kelas WHERE id = ?", [id]);
+
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: "Capaian_kelas not found" });
+    }
+
+    const nama_capaian = req.body.nama_capaian ?? existing[0].nama_capaian;
+    const id_fase = req.body.id_fase ?? existing[0].id_fase;
+    const id_sub_elemen = req.body.id_sub_elemen ?? existing[0].id_sub_elemen;
+    const id_sekolah = req.body.id_sekolah ?? existing[0].id_sekolah;
+    const id_kelas = req.body.id_kelas ?? existing[0].id_kelas;
+
+    const [result] = await db.query(
+      `UPDATE Capaian_kelas 
+       SET nama_capaian = ?, id_fase = ?, id_sub_elemen = ?, id_sekolah = ?, id_kelas = ?
+       WHERE id = ?`,
+      [nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas, id]
+    );
+
+    res.json({ success: true, message: "Successfully updated capaian_kelas", affectedRows: result.affectedRows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 module.exports = router;

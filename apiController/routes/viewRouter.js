@@ -355,4 +355,19 @@ router.get("/nilai/:id", verifyToken, async (req, res) => {
     }
 });
 
+router.get("/capaian_kelas/:id", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM Capaian_kelas WHERE id = ?", [req.params.id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Data not found" });
+    }
+
+    res.json({ success: true, data: rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 module.exports = router;

@@ -283,4 +283,20 @@ router.delete("/nilai/:id", verifyToken, async (req, res) => {
   }
 });
 
+router.delete("/capaian_kelas/:id", verifyToken, async (req, res) => {
+  try {
+    const [result] = await db.query("DELETE FROM Capaian_kelas WHERE id = ?", [req.params.id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Capaian_kelas not found" });
+    }
+
+    res.json({ success: true, message: "Capaian_kelas successfully deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+
 module.exports = router;
