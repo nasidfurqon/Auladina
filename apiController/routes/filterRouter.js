@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const verifyToken = require("../middleware/authMiddleware");
 
+//elemen berdasarkan dimensi
 router.get("/dimensi/:id/elemen", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -15,6 +16,7 @@ router.get("/dimensi/:id/elemen", verifyToken, async (req, res) => {
   }
 });
 
+//sub elemen berdasarkan elemen
 router.get("/elemen/:id/sub-elemen", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -27,6 +29,7 @@ router.get("/elemen/:id/sub-elemen", verifyToken, async (req, res) => {
   }
 });
 
+//capaian berdasarkan fase dan sub elemen
 router.get("/capaian", verifyToken, async (req, res) => {
   const { id_fase, id_sub_elemen } = req.query;
   try {
@@ -40,6 +43,7 @@ router.get("/capaian", verifyToken, async (req, res) => {
   }
 });
 
+//assessment berdasarkan capaian
 router.get("/capaian/:id/assessment", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -52,6 +56,7 @@ router.get("/capaian/:id/assessment", verifyToken, async (req, res) => {
   }
 });
 
+//jumlah kelas yang diampu guru
 router.get("/guru/:id/jumlah-kelas", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -64,6 +69,7 @@ router.get("/guru/:id/jumlah-kelas", verifyToken, async (req, res) => {
   }
 });
 
+//jumlah siswa yang diajar guru
 router.get("/guru/:id/jumlah-siswa", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -80,6 +86,7 @@ router.get("/guru/:id/jumlah-siswa", verifyToken, async (req, res) => {
   }
 });
 
+//nilai berdasarkan assessment
 router.get("/assessment/:id/nilai", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -92,6 +99,7 @@ router.get("/assessment/:id/nilai", verifyToken, async (req, res) => {
   }
 });
 
+//nilai berdasarkan siswa
 router.get("/siswa/:id/nilai", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -104,6 +112,7 @@ router.get("/siswa/:id/nilai", verifyToken, async (req, res) => {
   }
 });
 
+//nilai berdasarkan assessment dan siswa
 router.get("/nilai", verifyToken, async (req, res) => {
   const { id_assessment, id_siswa } = req.query;
 
@@ -134,6 +143,7 @@ router.get("/nilai", verifyToken, async (req, res) => {
   }
 });
 
+//nilai berdasarkan siswa dan capaian
 router.get("/siswa/:id_siswa/capaian/:id_capaian/nilai", verifyToken, async (req, res) => {
   const { id_siswa, id_capaian } = req.params;
 
@@ -194,5 +204,25 @@ router.get("/capaian_kelas/filter/:id_sub_elemen/:id_fase", verifyToken, async (
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+// Ambil 5 pengisian nilai terakhir berdasarkan id_guru
+router.get("/history/:id_guru", async (req, res) => {
+  try {
+    const { id_guru } = req.params;
+    const [rows] = await db.query(
+      `SELECT n.* 
+       FROM nilai n
+       JOIN pengampu p ON n.id_pengampu = p.id_pengampu
+       WHERE p.id_guru = ?
+       ORDER BY n.tanggal_input DESC 
+       LIMIT 5`,
+      [id_guru]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;
