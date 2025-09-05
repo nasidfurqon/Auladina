@@ -6,10 +6,9 @@ const verifyToken = require("../middleware/authMiddleware");
 //elemen berdasarkan dimensi
 router.get("/dimensi/:id/elemen", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT * FROM elemen WHERE id_dimensi = ?",
-      [req.params.id]
-    );
+    const [rows] = await db.query("SELECT * FROM elemen WHERE id_dimensi = ?", [
+      req.params.id,
+    ]);
     res.json({ success: true, data: rows });
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -72,13 +71,16 @@ router.get("/guru/:id/jumlah-kelas", verifyToken, async (req, res) => {
 //jumlah siswa yang diajar guru
 router.get("/guru/:id/jumlah-siswa", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query(`
+    const [rows] = await db.query(
+      `
       SELECT COUNT(DISTINCT siswa.id_siswa) AS jumlah_siswa
       FROM pengampu
       JOIN kelas ON pengampu.id_kelas = kelas.id_kelas
       JOIN siswa ON siswa.id_kelas = kelas.id_kelas
       WHERE pengampu.id_guru = ?
-    `, [req.params.id]);
+    `,
+      [req.params.id]
+    );
 
     res.json({ success: true, jumlah_siswa: rows[0].jumlah_siswa });
   } catch (err) {
@@ -102,10 +104,9 @@ router.get("/assessment/:id/nilai", verifyToken, async (req, res) => {
 //nilai berdasarkan siswa
 router.get("/siswa/:id/nilai", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT * FROM nilai WHERE id_siswa = ?",
-      [req.params.id]
-    );
+    const [rows] = await db.query("SELECT * FROM nilai WHERE id_siswa = ?", [
+      req.params.id,
+    ]);
     res.json({ success: true, data: rows });
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -144,12 +145,15 @@ router.get("/nilai", verifyToken, async (req, res) => {
 });
 
 //nilai berdasarkan siswa dan capaian
-router.get("/siswa/:id_siswa/capaian/:id_capaian/nilai", verifyToken, async (req, res) => {
-  const { id_siswa, id_capaian } = req.params;
+router.get(
+  "/siswa/:id_siswa/capaian/:id_capaian/nilai",
+  verifyToken,
+  async (req, res) => {
+    const { id_siswa, id_capaian } = req.params;
 
-  try {
-    const [rows] = await db.query(
-      `SELECT 
+    try {
+      const [rows] = await db.query(
+        `SELECT 
          n.id_nilai,
          n.nilai,
          n.tanggal_input,
@@ -159,31 +163,46 @@ router.get("/siswa/:id_siswa/capaian/:id_capaian/nilai", verifyToken, async (req
        FROM nilai n
        JOIN assessment a ON n.id_assessment = a.id_assessment
        WHERE n.id_siswa = ? AND a.id_capaian = ?`,
-      [id_siswa, id_capaian]
-    );
+        [id_siswa, id_capaian]
+      );
 
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
+    }
   }
-});
+);
 
 // GET by id_sekolah
-router.get("/capaian_kelas/sekolah/:id_sekolah", verifyToken, async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM Capaian_kelas WHERE id_sekolah = ?", [req.params.id_sekolah]);
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+router.get(
+  "/capaian_kelas/sekolah/:id_sekolah",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const [rows] = await db.query(
+        "SELECT * FROM Capaian_kelas WHERE id_sekolah = ?",
+        [req.params.id_sekolah]
+      );
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
   }
-});
+);
 
 // GET by id_kelas
 router.get("/capaian_kelas/kelas/:id_kelas", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM Capaian_kelas WHERE id_kelas = ?", [req.params.id_kelas]);
+    const [rows] = await db.query(
+      "SELECT * FROM Capaian_kelas WHERE id_kelas = ?",
+      [req.params.id_kelas]
+    );
     res.json({ success: true, data: rows });
   } catch (error) {
     console.error(error);
@@ -192,18 +211,24 @@ router.get("/capaian_kelas/kelas/:id_kelas", verifyToken, async (req, res) => {
 });
 
 // GET by id_sub_elemen AND id_fase
-router.get("/capaian_kelas/filter/:id_sub_elemen/:id_fase", verifyToken, async (req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM Capaian_kelas WHERE id_sub_elemen = ? AND id_fase = ?",
-      [req.params.id_sub_elemen, req.params.id_fase]
-    );
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+router.get(
+  "/capaian_kelas/filter/:id_sub_elemen/:id_fase",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const [rows] = await db.query(
+        "SELECT * FROM Capaian_kelas WHERE id_sub_elemen = ? AND id_fase = ?",
+        [req.params.id_sub_elemen, req.params.id_fase]
+      );
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
   }
-});
+);
 
 // Ambil 5 pengisian nilai terakhir berdasarkan id_guru
 router.get("/history/:id_guru", async (req, res) => {
@@ -224,5 +249,37 @@ router.get("/history/:id_guru", async (req, res) => {
   }
 });
 
+router.get("/assessment/guru/:id_guru", verifyToken, async (req, res) => {
+  try {
+    const { id_guru } = req.params;
+
+    const [rows] = await db.query(
+      `SELECT DISTINCT a.* 
+       FROM assessment a
+       JOIN nilai n ON a.id_assessment = n.id_assesment
+       JOIN pengampu p ON n.id_pengampu = p.id_pengampu
+       WHERE p.id_guru = ?`,
+      [id_guru]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Assessment not found for this teacher",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
 
 module.exports = router;
