@@ -109,20 +109,27 @@ router.post("/sekolah", verifyToken, async (req, res) => {
 //4
 router.post("/siswa", verifyToken, async (req, res) => {
   try {
-    const id_kelas = req.body.id_kelas ?? null;
-    const id_sekolah = req.body.id_sekolah ?? null;
-    const nama = req.body.nama ?? null;
-    const nisn = req.body.nisn ?? null;
-    const tanggal_lahir = req.body.tanggal_lahir ?? null;
-    const jenis_kelamin = req.body.jenis_kelamin ?? null;
+    const siswaList = Array.isArray(req.body) ? req.body: [req.body];
+    
+    const values = [];
+    for(const siswa of siswaList){
+      const id_kelas = siswa.id_kelas ?? null;
+      const id_sekolah = siswa.id_sekolah ?? null;
+      const nama = siswa.nama ?? null;
+      const nisn = siswa.nisn ?? null;
+      const tanggal_lahir = siswa.tanggal_lahir ?? null;
+      const jenis_kelamin = siswa.jenis_kelamin ?? null;
+      values.push([id_kelas, id_sekolah, nama, nisn, tanggal_lahir, jenis_kelamin]);  
+    }
 
     const [result] = await db.query(
-      "INSERT INTO siswa (id_kelas, id_sekolah, nama, nisn, tanggal_lahir, jenis_kelamin) VALUES (?, ?, ?, ?, ?, ?)",
-      [id_kelas, id_sekolah, nama, nisn, tanggal_lahir, jenis_kelamin]
+      "INSERT INTO siswa (id_kelas, id_sekolah, nama, nisn, tanggal_lahir, jenis_kelamin) VALUES ?",
+      [values]
     );
     res.status(200).json({
       success: true,
       message: "Successfully add siswa",
+      insertedCount: result.affectedRows,
       id: result.insertId,
     });
   } catch (error) {
@@ -258,16 +265,23 @@ router.post("/sub_elemen", verifyToken, async(req, res)=>{
 //11
 router.post("/capaian", verifyToken, async(req, res)=>{
     try{
-        const id_sub_elemen = req.body.id_sub_elemen ?? null;
-        const id_fase = req.body.id_fase ?? null;
-        const deskripsi = req.body.deskripsi ?? null;
+        const capaianList = Array.isArray(req.body) ? req.body : [req.body];
 
-        const [result] = await db.query("INSERT INTO capaian (id_sub_elemen, id_fase, deskripsi) VALUES (?, ?, ?)",
-        [id_sub_elemen, id_fase, deskripsi]);
+        const values = [];
+
+        for(const capaian of capaianList){
+          const id_sub_elemen = capaian.id_sub_elemen ?? null;
+          const id_fase = capaian.id_fase ?? null;
+          const deskripsi = capaian.deskripsi ?? null;
+          values.push([id_sub_elemen, id_fase, deskripsi]);
+        }
+
+        const [result] = await db.query("INSERT INTO capaian (id_sub_elemen, id_fase, deskripsi) VALUES ?",
+        [values]);
         res.status(200).json({
-          success: true, 
-          message: "Successfully add capaian", 
-          id: result.insertId
+          success: true,
+          message: "Successfully add capaian",
+          insertedCount: result.affectedRows
         });
     }
     catch(error){

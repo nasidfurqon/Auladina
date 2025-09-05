@@ -9,8 +9,8 @@ const sendVerificationEmail = require("../utils/mail");
 
 router.post("/register", async(req, res)=>{
     try{
-        const{nama, email, password_hash} = req.body;
-        if(!nama || !email || !password_hash){
+        const {email, password_hash} = req.body;
+        if(!email || !password_hash){
             return res.status(400).json({success: false, message: "email, password cant be empty"});
         }
 
@@ -21,7 +21,7 @@ router.post("/register", async(req, res)=>{
 
         const hashed = await bcrypt.hash(password_hash, round);
         const [result] = await db.query(
-            "INSERT INTO users (mail, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)", [email, hashed, 0, new Date()]
+            "INSERT INTO users (email, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)", [email, hashed, 0, new Date()]
         );
 
         const token = jwt.sign({email}, process.env.JWT_SECRET, {expiresIn: "1h"}); 
