@@ -256,7 +256,7 @@ router.get("/assessment/guru/:id_guru", verifyToken, async (req, res) => {
     const [rows] = await db.query(
       `SELECT DISTINCT a.* 
        FROM assessment a
-       JOIN nilai n ON a.id_assessment = n.id_assesment
+       JOIN nilai n ON a.id_assessment = n.id_assessment
        JOIN pengampu p ON n.id_pengampu = p.id_pengampu
        WHERE p.id_guru = ?`,
       [id_guru]
