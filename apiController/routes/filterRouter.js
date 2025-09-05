@@ -332,9 +332,9 @@ router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, 
 });
 
 
-router.get("/guru/user/:email", verifyToken,async (req, res) => {
+router.get("/guru/user", verifyToken,async (req, res) => {
     try {
-      const { email } = req.params;
+      const { email } = req.query;
 
       const [rows] = await db.query(
         `SELECT * from guru where email = ?`,
