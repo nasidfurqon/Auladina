@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-const verifyToken = require("../middleware/authMiddleware");
+const {verifyToken} = require("../middleware/authMiddleware");
 
 //1
 router.delete("/guru/:id", verifyToken, async(req, res)=>{

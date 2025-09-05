@@ -6,85 +6,158 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const round = 10;
 const sendVerificationEmail = require("../utils/mail");
+const { verifyTokenNIP } = require("../middleware/authMiddleware");
 
-router.post("/register", async(req, res)=>{
-    try{
-        const {email, password_hash} = req.body;
-        if(!email || !password_hash){
-            return res.status(400).json({success: false, message: "email, password cant be empty"});
-        }
-
-        const [existing] = await db.query("SELECT * FROM users WHERE email = ?",[email]);
-        if(existing.length > 0){
-            return res.status(400).json({success: false, message: "email already exist"});
-        }
-
-        const hashed = await bcrypt.hash(password_hash, round);
-        const [result] = await db.query(
-            "INSERT INTO users (email, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)", [email, hashed, 0, new Date()]
-        );
-
-        const token = jwt.sign({email}, process.env.JWT_SECRET, {expiresIn: "1h"}); 
-        await sendVerificationEmail(email, token);
-
-        res.status(200).json({success: true, message: "Registratsi is Successfull", id: result.insertId});
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password_hash } = req.body;
+    if (!email || !password_hash) {
+      return res
+        .status(400)
+        .json({ success: false, message: "email, password cant be empty" });
     }
-    catch(err){
-        console.error(err);
-        res.status(500).json({success: false, message: "Internal server error"});
-    }
-})
 
-router.get("/verify", async (req, res) =>{
-    const { token } = req.query;
-
-    try{
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { email } = decoded;
-
-        await db.execute("UPDATE users SET is_verified = ? WHERE email = ?", [1, email]);
-        res.send("Email successfully verified!");
+    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+    if (existing.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "email already exist" });
     }
-    catch (err) {
-        res.status(400).send("Invalid or expired token.");
-    }
+
+    const hashed = await bcrypt.hash(password_hash, round);
+    const [result] = await db.query(
+      "INSERT INTO users (email, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)",
+      [email, hashed, 0, new Date()]
+    );
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    await sendVerificationEmail(email, token);
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Registratsi is Successfull",
+        id: result.insertId,
+      });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
 
-router.post("/login", async(req, res)=>{
-    try{
-        const {email, password_hash} = req.body;
-        const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+router.get("/verify", async (req, res) => {
+  const { token } = req.query;
 
-        if(users.length === 0){
-            return res.status(401).json({success: false, message: "email not found"});
-        }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = decoded;
 
-        const user = users[0]
-        if (user.is_verified != 1)
-        return res
-            .status(403)
-            .json({ message: "Please verify your email" });
+    await db.execute("UPDATE users SET is_verified = ? WHERE email = ?", [
+      1,
+      email,
+    ]);
+    res.send("Email successfully verified!");
+  } catch (err) {
+    res.status(400).send("Invalid or expired token.");
+  }
+});
 
-        const valid = await bcrypt.compare(password_hash, user.password_hash);
-        if(!valid){
-            return res.status(401).json({success: false, message: "Wrong password"})
-        }
-        const token = jwt.sign(
-            {id: user.id_guru, email: user.email},
-            process.env.JWT_SECRET,
-            {expiresIn: "1d"}
-        );
+router.post("/verify_nip", verifyTokenNIP, async (req, res) => {
+  const { nip } = req.body;
 
-        res.status(200).json({
-            success: true,
-            message: "Login Successfull",
-            token: token,
-        });
+  if (!nip) {
+    return res.status(400).json({ success: false, message: "NIP is required" });
+  }
+  try {
+    const { email } = req.user;
+
+    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+    const user = users[0];
+    const [guru] = await db.query("SELECT * FROM guru WHERE nip = ?", [nip]);
+    if (!guru.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "NIP not found in guru table" });
     }
-    catch(err){
-        console.error(err);
-        res.status(500).json({success: false, message: "Internal Server Error"});
+
+    await db.execute("UPDATE guru SET email = ? WHERE nip = ?", [email, nip]);
+
+    await db.execute("UPDATE users SET is_verified_nip = ? WHERE email = ?", [
+      1,
+      email,
+    ]);
+
+    const token = jwt.sign(
+      {
+        id: user.id_user,
+        email: user.email,
+        is_verified_nip: 1,
+        is_verified: 1,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully Verified",
+      token: token,
+    });
+  } catch (err) {
+    res.status(400).send("Invalid or expired token," + err.message);
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password_hash } = req.body;
+    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (users.length === 0) {
+      return res
+        .status(401)
+        .json({ success: false, message: "email not found" });
     }
-})
+
+    const user = users[0];
+    if (user.is_verified != 1)
+      return res.status(403).json({ message: "Please verify your email" });
+
+    const valid = await bcrypt.compare(password_hash, user.password_hash);
+    if (!valid) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Wrong password" });
+    }
+    const token = jwt.sign(
+      {
+        id: user.id_user,
+        email: user.email,
+        is_verified_nip: user.is_verified_nip,
+        is_verified: user.is_verified,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Login Successfull",
+      token: token,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
 
 module.exports = router;

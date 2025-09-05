@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-const verifyToken = require("../middleware/authMiddleware");
+const {verifyToken} = require("../middleware/authMiddleware");
 
 //elemen berdasarkan dimensi
 router.get("/dimensi/:id/elemen", verifyToken, async (req, res) => {

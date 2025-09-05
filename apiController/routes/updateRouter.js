@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const round = 10;
 const bcrypt = require('bcrypt');
-const verifyToken = require("../middleware/authMiddleware");
+const {verifyToken} = require("../middleware/authMiddleware");
 
 //1
 router.put("/guru/:id", verifyToken, async(req, res)=>{
