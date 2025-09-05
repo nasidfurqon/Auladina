@@ -22,6 +22,26 @@ router.delete("/guru/:id", verifyToken, async(req, res)=>{
     }
 });
 
+router.delete("/users/:id", verifyToken, async (req, res) => {
+  try {
+    const [result] = await db.query("DELETE FROM users WHERE id_user = ?", [
+      req.params.id,
+    ]);
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "Failed Delete User: user not found",
+        });
+    }
+    res.json({ success: true, message: "User successfully deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 //2
 router.delete("/role/:id", verifyToken, async (req, res) => {
   try {
