@@ -242,7 +242,7 @@ router.get("/kelas", verifyToken, async (req, res) => {
 
 router.get("/capaian_kelas", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM Capaian_kelas");
+    const [rows] = await db.query("SELECT * FROM capaian_kelas");
     res.json({ success: true, data: rows });
   } catch (error) {
     console.error(error);

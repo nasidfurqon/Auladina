@@ -337,12 +337,12 @@ router.post("/nilai", verifyToken, async(req, res)=>{
 
 router.post("/capaian_kelas", verifyToken, async (req, res) => {
   try {
-    const { nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas } = req.body;
+    const { kode_ck, nama_ck, id_sekolah, id_capaian } = req.body;
 
     const [result] = await db.query(
-      `INSERT INTO Capaian_kelas (nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas]
+      `INSERT INTO capaian_kelas (kode_ck, nama_ck, id_sekolah, id_capaian) 
+       VALUES (?, ?, ?, ?)`,
+      [kode_ck, nama_ck, id_sekolah, id_capaian]
     );
 
     res.status(200).json({

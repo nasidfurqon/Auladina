@@ -475,23 +475,22 @@ router.put("/nilai/:id", verifyToken, async (req, res) => {
 router.put("/capaian_kelas/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const [existing] = await db.query("SELECT * FROM Capaian_kelas WHERE id = ?", [id]);
+    const [existing] = await db.query("SELECT * FROM capaian_kelas WHERE id = ?", [id]);
 
     if (existing.length === 0) {
-      return res.status(404).json({ success: false, message: "Capaian_kelas not found" });
+      return res.status(404).json({ success: false, message: "capaian_kelas not found" });
     }
 
-    const nama_capaian = req.body.nama_capaian ?? existing[0].nama_capaian;
-    const id_fase = req.body.id_fase ?? existing[0].id_fase;
-    const id_sub_elemen = req.body.id_sub_elemen ?? existing[0].id_sub_elemen;
+    const kode_ck = req.body.kode_ck ?? existing[0].kode_ck;
+    const nama_ck = req.body.nama_ck ?? existing[0].nama_ck;
     const id_sekolah = req.body.id_sekolah ?? existing[0].id_sekolah;
-    const id_kelas = req.body.id_kelas ?? existing[0].id_kelas;
+    const id_capaian = req.body.id_capaian ?? existing[0].id_capaian;
 
     const [result] = await db.query(
-      `UPDATE Capaian_kelas 
-       SET nama_capaian = ?, id_fase = ?, id_sub_elemen = ?, id_sekolah = ?, id_kelas = ?
+      `UPDATE capaian_kelas 
+       SET kode_ck = ?, nama_ck = ?, id_sekolah = ?, id_capaian = ?
        WHERE id = ?`,
-      [nama_capaian, id_fase, id_sub_elemen, id_sekolah, id_kelas, id]
+      [kode_ck, nama_ck, id_sekolah, id_capaian, id]
     );
 
     res.json({ success: true, message: "Successfully updated capaian_kelas", affectedRows: result.affectedRows });
@@ -500,5 +499,47 @@ router.put("/capaian_kelas/:id", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+router.put("/nilai/:id_siswa/:id_assessment", verifyToken, async (req, res) => {
+  try {
+    const { id_assessment, id_siswa } = req.params;
+
+    // cek apakah data nilai ada
+    const [existing] = await db.query(
+      "SELECT * FROM nilai WHERE id_assessment = ? AND id_siswa = ?",
+      [id_assessment, id_siswa]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Nilai not found for this assessment and student" 
+      });
+    }
+
+    // ambil nilai dari body, kalau kosong pakai nilai existing
+    const nilai = req.body.nilai ?? existing[0].nilai;
+
+    const [result] = await db.query(
+      `UPDATE nilai 
+       SET nilai = ? 
+       WHERE id_assessment = ? AND id_siswa = ?`,
+      [nilai, id_assessment, id_siswa]
+    );
+
+    res.json({
+      success: true,
+      message: "Successfully updated nilai",
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
+    });
+  }
+});
+
 
 module.exports = router;

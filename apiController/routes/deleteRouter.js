@@ -305,18 +305,52 @@ router.delete("/nilai/:id", verifyToken, async (req, res) => {
 
 router.delete("/capaian_kelas/:id", verifyToken, async (req, res) => {
   try {
-    const [result] = await db.query("DELETE FROM Capaian_kelas WHERE id = ?", [req.params.id]);
+    const [result] = await db.query("DELETE FROM capaian_kelas WHERE id = ?", [req.params.id]);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "Capaian_kelas not found" });
+      return res.status(404).json({ success: false, message: "capaian_kelas not found" });
     }
 
-    res.json({ success: true, message: "Capaian_kelas successfully deleted" });
+    res.json({ success: true, message: "capaian_kelas successfully deleted" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+// DELETE all nilai by id_assessment
+router.delete("/assessment/:id_assessment/nilai", verifyToken, async (req, res) => {
+  try {
+    const { id_assessment } = req.params;
+
+    // Hapus semua nilai berdasarkan id_assessment
+    const [result] = await db.query(
+      "DELETE FROM nilai WHERE id_assessment = ?",
+      [id_assessment]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No nilai found for assessment ${id_assessment}`
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Successfully deleted ${result.affectedRows} nilai for assessment ${id_assessment}`,
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+});
+
+
 
 
 module.exports = router;

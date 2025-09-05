@@ -282,4 +282,30 @@ router.get("/assessment/guru/:id_guru", verifyToken, async (req, res) => {
   }
 });
 
+// GET guru by user_id
+router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    // join users dan guru
+    const [rows] = await db.query(
+      `SELECT g.*, u.* 
+       FROM guru g
+       INNER JOIN users u ON g.user_id = u.id
+       WHERE g.user_id = ?`,
+      [user_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Guru not found for this user_id" });
+    }
+
+    res.json({ success: true, data: rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+
 module.exports = router;
