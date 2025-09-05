@@ -4,7 +4,7 @@ const db = require("../db");
 const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.get("/guru/:id", verifyToken, verifyToken, async (req, res) => {
+router.get("/guru/:id", verifyToken, async (req, res) => {
     try {
       const [rows] = await db.query("SELECT * FROM guru WHERE id_guru = ?", [
         req.params.id,
@@ -28,6 +28,32 @@ router.get("/guru/:id", verifyToken, verifyToken, async (req, res) => {
         message: "Internal Server Error",
       });
     }
+});
+
+outer.get("/users/:id", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM users WHERE id_users = ?", [
+      req.params.id,
+    ]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Data not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 });
 
 //2

@@ -18,23 +18,56 @@ router.put("/guru/:id", verifyToken, async(req, res)=>{
         }
         const id_sekolah = req.body.id_sekolah ?? existingData[0].id_sekolah ;
         const nama = req.body.nama ?? existingData[0].nama;
-        const email = req.body.email ?? existingData[0].email;
         const nip = req.body.nip ?? existingData[0].nip;
-        const password_hash = req.body.password_hash ?? existingData[0].password_hash;
         const id_role = req.body.id_role ?? existingData[0].id_role;
-        
-        const hashed = req.body.password_hash
-          ? await bcrypt.hash(password_hash, round)
-          : password_hash;
 
-        const [result] = await db.query("UPDATE guru set id_sekolah = ?, nama = ?, email =  ?, nip = ?, password_hash =  ?, id_role =  ? WHERE id_guru = ?",
-        [id_sekolah, nama, email, nip, hashed, id_role, id]);
+        const [result] = await db.query("UPDATE guru set id_sekolah = ?, nama = ?, nip = ?, id_role =  ? WHERE id_guru = ?",
+        [id_sekolah, nama, nip, id_role, id]);
         res.status(200).json({success: true, message: "Successfully update guru", affectedRows: result.affectedRows});
     }
     catch(error){
         console.error(error);
         res.status(500).json({success: false, message: "Internal server error"});
     }
+});
+
+router.put("/users/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [existingData] = await db.query(
+      "SELECT * FROM users where id_users = ?",
+      [id]
+    );
+    if (existingData.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    const email = req.body.email ?? existingData[0].email;
+    const password_hash =
+      req.body.password_hash ?? existingData[0].password_hash;
+    const update_at = new Date();
+
+    const hashed = req.body.password_hash
+      ? await bcrypt.hash(password_hash, round)
+      : password_hash;
+
+    const [result] = await db.query(
+      "UPDATE users set  email =  ?, password_hash =  ?, id_role =  ?, update_at = ? WHERE id_users = ?",
+      [email, hashed, id_role, update_at, id]
+    );
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Successfully update users",
+        affectedRows: result.affectedRows,
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
 
 //2

@@ -11,17 +11,17 @@ router.post("/register", async(req, res)=>{
     try{
         const{nama, email, password_hash} = req.body;
         if(!nama || !email || !password_hash){
-            return res.status(400).json({success: false, message: "nama, email, password cant be empty"});
+            return res.status(400).json({success: false, message: "email, password cant be empty"});
         }
 
-        const [existing] = await db.query("SELECT * FROM guru WHERE email = ?",[email]);
+        const [existing] = await db.query("SELECT * FROM users WHERE email = ?",[email]);
         if(existing.length > 0){
             return res.status(400).json({success: false, message: "email already exist"});
         }
 
         const hashed = await bcrypt.hash(password_hash, round);
         const [result] = await db.query(
-            "INSERT INTO guru (nama, email, password_hash, is_verified) VALUES (?, ?, ?, ?)", [nama, email, hashed, 0]
+            "INSERT INTO users (mail, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)", [email, hashed, 0, new Date()]
         );
 
         const token = jwt.sign({email}, process.env.JWT_SECRET, {expiresIn: "1h"}); 
@@ -42,7 +42,7 @@ router.get("/verify", async (req, res) =>{
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { email } = decoded;
 
-        await db.execute("UPDATE guru SET is_verified = ? WHERE email = ?", [1, email]);
+        await db.execute("UPDATE users SET is_verified = ? WHERE email = ?", [1, email]);
         res.send("Email successfully verified!");
     }
     catch (err) {
@@ -53,14 +53,14 @@ router.get("/verify", async (req, res) =>{
 router.post("/login", async(req, res)=>{
     try{
         const {email, password_hash} = req.body;
-        const [users] = await db.query("SELECT * FROM guru WHERE email = ?", [email]);
+        const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
 
         if(users.length === 0){
             return res.status(401).json({success: false, message: "email not found"});
         }
 
         const user = users[0]
-        if (user.is_verified[0] != 1)
+        if (user.is_verified != 1)
         return res
             .status(403)
             .json({ message: "Please verify your email" });

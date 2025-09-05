@@ -6,27 +6,57 @@ const bcrypt = require('bcrypt');
 const verifyToken = require("../middleware/authMiddleware");
 
 //1
-router.post("/guru", verifyToken,  verifyToken, async(req, res)=>{
+
+router.post("/guru", verifyToken, async (req, res) => {
+  try {
+    const guruList = Array.isArray(req.body) ? req.body : [req.body];
+
+    const values = [];
+    for (const guru of guruList) {
+      const id_sekolah = guru.id_sekolah ?? null;
+      const nama = guru.nama ?? null;
+      const nip = guru.nip ?? null;
+      const id_role = guru.id_role ?? null;
+      values.push([id_sekolah, nama, nip, id_role]);
+    }
+
+    const [result] = await db.query(
+      "INSERT INTO guru (id_sekolah, nama, nip, id_role) VALUES ?",
+      [values]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully add guru",
+      insertedCount: result.affectedRows,
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+router.post("/users", verifyToken, async(req, res)=>{
     try{
-        const id_sekolah = req.body.id_sekolah ?? null;
-        const nama = req.body.nama ?? null;
         const email = req.body.email ?? null;
-        const nip = req.body.nip ?? null;
         const password_hash = req.body.password_hash ?? null;
-        const id_role = req.body.id_role ?? null;
+        const created_at = new Date();
 
-        const hashed = req.body.password_hash ? await bcrypt.hash(password_hash, round) : null  ;
+        const hashed = req.body.password_hash ? await bcrypt.hash(password_hash, round) : null;
 
-        const [result] = await db.query("INSERT INTO guru (id_sekolah, nama, email, nip, password_hash, id_role) VALUES (?, ?, ?, ?, ?, ?)",
-        [id_sekolah, nama, email, nip, hashed, id_role]);
+        const [result] = await db.query("INSERT INTO guru (email, password_hash, created_at) VALUES (?, ?, ?)",
+        [email, hashed, created_at]);
+
         res.status(200).json({
-          success: true,
-          message: "Successfully add guru", 
+          success: true,  
+          message: "Successfully add users",
+          insertedCount: result.affectedRows,
           id: result.insertId
         });
     }
     catch(error){
-        console.error(error);
+        console.error(error); 
         res.status(500).json({success: false, message: "Internal server error"});
     }
 });

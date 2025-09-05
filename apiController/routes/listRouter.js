@@ -20,6 +20,22 @@ router.get("/guru", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/users", verifyToken, async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM users");
+    res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
+
 //2
 router.get("/role", verifyToken, async (req, res) => {
   try {
