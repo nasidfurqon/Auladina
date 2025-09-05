@@ -332,4 +332,33 @@ router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, 
 });
 
 
+router.get("/guru/user/:email", verifyToken,async (req, res) => {
+    try {
+      const { ema } = req.params;
+
+      const [rows] = await db.query(
+        `SELECT * from guru where email = ?`,
+        [email]
+      );
+
+      if (rows.length === 0) {
+        return res
+          .status(404)
+          .json({
+            success: false,
+            message: "No guru found for this email",
+          });
+      }
+
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+);
+
+
 module.exports = router;

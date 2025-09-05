@@ -32,7 +32,7 @@ router.get("/guru/:id", verifyToken, async (req, res) => {
 
 router.get("/users/:id", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE id_users = ?", [
+    const [rows] = await db.query("SELECT * FROM users WHERE id_user = ?", [
       req.params.id,
     ]);
 
