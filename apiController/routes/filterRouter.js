@@ -332,7 +332,7 @@ router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, 
 });
 
 
-router.get("/guru/user", verifyToken,async (req, res) => {
+router.get("/guru/userEmail", verifyToken,async (req, res) => {
     try {
       const { email } = req.query;
 
