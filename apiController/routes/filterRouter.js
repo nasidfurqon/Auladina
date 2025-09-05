@@ -334,7 +334,7 @@ router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, 
 
 router.get("/guru/user/:email", verifyToken,async (req, res) => {
     try {
-      const { ema } = req.params;
+      const { email } = req.params;
 
       const [rows] = await db.query(
         `SELECT * from guru where email = ?`,
