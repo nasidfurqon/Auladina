@@ -307,5 +307,29 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
   }
 });
 
+// GET capaian_kelas by id_sub_elemen
+router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, res) => {
+  try {
+    const { id_sub_elemen } = req.params;
+
+    const [rows] = await db.query(
+      `SELECT ck.* 
+       FROM capaian_kelas ck
+       INNER JOIN capaian c ON ck.id_capaian = c.id_capaian
+       WHERE c.id_sub_elemen = ?`,
+      [id_sub_elemen]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "No capaian_kelas found for this id_sub_elemen" });
+    }
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 
 module.exports = router;
