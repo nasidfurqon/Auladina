@@ -291,7 +291,7 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
     const [rows] = await db.query(
       `SELECT g.*, u.* 
        FROM guru g
-       INNER JOIN users u ON g.user_id = u.id
+       INNER JOIN users u ON g.user_id = u.id_user
        WHERE g.user_id = ?`,
       [user_id]
     );
