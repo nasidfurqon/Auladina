@@ -331,5 +331,40 @@ router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, 
   }
 });
 
+router.get("/guru/siswa-belum-dinilai/:id_guru", verifyToken, async (req, res) => {
+  try {
+    const { id_guru } = req.params;
+
+    // Query untuk menghitung siswa belum dinilai
+    const [rows] = await db.query(
+      `SELECT 
+          (total_siswa_semua_assessment - total_nilai_sudah_ada) as siswa_belum_dinilai
+       FROM (
+          SELECT 
+              (SELECT COUNT(*) 
+               FROM nilai n 
+               INNER JOIN pengampu p ON n.id_pengampu = p.id_pengampu 
+               WHERE p.id_guru = ?) as total_siswa_semua_assessment,
+              (SELECT COUNT(*) 
+               FROM nilai n 
+               INNER JOIN pengampu p ON n.id_pengampu = p.id_pengampu 
+               WHERE nilai != '-' AND p.id_guru = ?) as total_nilai_sudah_ada
+       ) counts`,
+      [id_guru, id_guru]
+    );
+
+    res.json({ 
+      success: true, 
+      data: {
+        siswa_belum_dinilai: rows[0].siswa_belum_dinilai,
+        id_guru: id_guru
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
 
 module.exports = router;
