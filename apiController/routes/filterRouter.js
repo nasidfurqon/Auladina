@@ -256,7 +256,7 @@ router.get("/assessment/guru/:id_guru", verifyToken, async (req, res) => {
     const [rows] = await db.query(
       `SELECT DISTINCT a.* 
        FROM assessment a
-       JOIN nilai n ON a.id_assessment = n.id_assesment
+       JOIN nilai n ON a.id_assessment = n.id_assessment
        JOIN pengampu p ON n.id_pengampu = p.id_pengampu
        WHERE p.id_guru = ?`,
       [id_guru]
@@ -291,7 +291,7 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
     const [rows] = await db.query(
       `SELECT g.*, u.* 
        FROM guru g
-       INNER JOIN users u ON g.user_id = u.id
+       INNER JOIN users u ON g.user_id = u.id_user
        WHERE g.user_id = ?`,
       [user_id]
     );
@@ -366,5 +366,34 @@ router.get("/guru/siswa-belum-dinilai/:id_guru", verifyToken, async (req, res) =
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+router.get("/guru/userEmail", verifyToken,async (req, res) => {
+    try {
+      const { email } = req.query;
+
+      const [rows] = await db.query(
+        `SELECT * from guru where email = ?`,
+        [email]
+      );
+
+      if (rows.length === 0) {
+        return res
+          .status(404)
+          .json({
+            success: false,
+            message: "No guru found for this email",
+          });
+      }
+
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+);
+
 
 module.exports = router;
