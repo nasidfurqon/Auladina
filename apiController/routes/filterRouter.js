@@ -308,28 +308,36 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
 });
 
 // GET capaian_kelas by id_sub_elemen
-router.get("/capaian_kelas/sub_elemen/:id_sub_elemen", verifyToken, async (req, res) => {
-  try {
-    const { id_sub_elemen } = req.params;
+router.get("/capaian_kelas/sub_elemen/:id_sub_elemen/sekolah/:id_sekolah", verifyToken, async (req, res) => {
+    try {
+      const { id_sub_elemen, id_sekolah } = req.params;
 
-    const [rows] = await db.query(
-      `SELECT ck.* 
-       FROM capaian_kelas ck
-       INNER JOIN capaian c ON ck.id_capaian = c.id_capaian
-       WHERE c.id_sub_elemen = ?`,
-      [id_sub_elemen]
-    );
+      const [rows] = await db.query(
+        `SELECT ck.* 
+         FROM capaian_kelas ck
+         INNER JOIN capaian c ON ck.id_capaian = c.id_capaian
+         WHERE c.id_sub_elemen = ? 
+         AND ck.id_sekolah = ?`,
+        [id_sub_elemen, id_sekolah]
+      );
 
-    if (rows.length === 0) {
-      return res.status(404).json({ success: false, message: "No capaian_kelas found for this id_sub_elemen" });
+      if (rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "No capaian_kelas found for this sub_elemen and sekolah",
+        });
+      }
+
+      res.json({ success: true, data: rows });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
     }
-
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
   }
-});
+);
 
 router.get("/guru/siswa-belum-dinilai/:id_guru", verifyToken, async (req, res) => {
   try {
