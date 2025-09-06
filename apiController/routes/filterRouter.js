@@ -176,60 +176,6 @@ router.get(
   }
 );
 
-// GET by id_sekolah
-router.get(
-  "/capaian_kelas/sekolah/:id_sekolah",
-  verifyToken,
-  async (req, res) => {
-    try {
-      const [rows] = await db.query(
-        "SELECT * FROM Capaian_kelas WHERE id_sekolah = ?",
-        [req.params.id_sekolah]
-      );
-      res.json({ success: true, data: rows });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
-    }
-  }
-);
-
-// GET by id_kelas
-router.get("/capaian_kelas/kelas/:id_kelas", verifyToken, async (req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM Capaian_kelas WHERE id_kelas = ?",
-      [req.params.id_kelas]
-    );
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-});
-
-// GET by id_sub_elemen AND id_fase
-router.get(
-  "/capaian_kelas/filter/:id_sub_elemen/:id_fase",
-  verifyToken,
-  async (req, res) => {
-    try {
-      const [rows] = await db.query(
-        "SELECT * FROM Capaian_kelas WHERE id_sub_elemen = ? AND id_fase = ?",
-        [req.params.id_sub_elemen, req.params.id_fase]
-      );
-      res.json({ success: true, data: rows });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
-    }
-  }
-);
-
 // Ambil 5 pengisian nilai terakhir berdasarkan id_guru
 router.get("/history/:id_guru", async (req, res) => {
   try {
@@ -308,17 +254,17 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
 });
 
 // GET capaian_kelas by id_sub_elemen
-router.get("/capaian_kelas/sub_elemen/:id_sub_elemen/sekolah/:id_sekolah", verifyToken, async (req, res) => {
+router.get("/capaian_kelas/sub_elemen/:id_sub_elemen/kelas/:id_kelas", verifyToken, async (req, res) => {
     try {
-      const { id_sub_elemen, id_sekolah } = req.params;
+      const { id_sub_elemen, id_kelas } = req.params;
 
       const [rows] = await db.query(
         `SELECT ck.* 
          FROM capaian_kelas ck
          INNER JOIN capaian c ON ck.id_capaian = c.id_capaian
          WHERE c.id_sub_elemen = ? 
-         AND ck.id_sekolah = ?`,
-        [id_sub_elemen, id_sekolah]
+         AND ck.id_kelas = ?`,
+        [id_sub_elemen, id_kelas]
       );
 
       if (rows.length === 0) {
