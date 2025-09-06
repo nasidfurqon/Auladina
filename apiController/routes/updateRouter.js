@@ -485,12 +485,13 @@ router.put("/capaian_kelas/:id", verifyToken, async (req, res) => {
     const nama_ck = req.body.nama_ck ?? existing[0].nama_ck;
     const id_sekolah = req.body.id_sekolah ?? existing[0].id_sekolah;
     const id_capaian = req.body.id_capaian ?? existing[0].id_capaian;
+    const id_kelas = req.body.id_kelas ?? existing[0].id_kelas;
 
     const [result] = await db.query(
       `UPDATE capaian_kelas 
-       SET kode_ck = ?, nama_ck = ?, id_sekolah = ?, id_capaian = ?
+       SET kode_ck = ?, nama_ck = ?, id_sekolah = ?, id_capaian = ?, id_kelas = ?
        WHERE id = ?`,
-      [kode_ck, nama_ck, id_sekolah, id_capaian, id]
+      [kode_ck, nama_ck, id_sekolah, id_capaian, id_kelas, id]
     );
 
     res.json({ success: true, message: "Successfully updated capaian_kelas", affectedRows: result.affectedRows });
