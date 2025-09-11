@@ -240,27 +240,6 @@ router.delete("/sub_elemen/:id", verifyToken, async (req, res) => {
   }
 });
 
-//11
-router.delete("/capaian/:id", verifyToken, async (req, res) => {
-  try {
-    const [result] = await db.query("DELETE FROM capaian WHERE id_capaian = ?", [
-      req.params.id,
-    ]);
-    if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Failed Delete capaian: capaian not found",
-        });
-    }
-    res.json({ success: true, message: "capaian successfully deleted" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
-
 //12
 router.delete("/assessment/:id", verifyToken, async (req, res) => {
   try {

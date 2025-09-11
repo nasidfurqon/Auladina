@@ -262,44 +262,18 @@ router.post("/sub_elemen", verifyToken, async(req, res)=>{
     }
 });
 
-//11
-router.post("/capaian", verifyToken, async(req, res)=>{
-    try{
-        const capaianList = Array.isArray(req.body) ? req.body : [req.body];
 
-        const values = [];
-
-        for(const capaian of capaianList){
-          const id_sub_elemen = capaian.id_sub_elemen ?? null;
-          const id_fase = capaian.id_fase ?? null;
-          const deskripsi = capaian.deskripsi ?? null;
-          values.push([id_sub_elemen, id_fase, deskripsi]);
-        }
-
-        const [result] = await db.query("INSERT INTO capaian (id_sub_elemen, id_fase, deskripsi) VALUES ?",
-        [values]);
-        res.status(200).json({
-          success: true,
-          message: "Successfully add capaian",
-          insertedCount: result.affectedRows
-        });
-    }
-    catch(error){
-        console.error(error);
-        res.status(500).json({success: false, message: "Internal server error"});
-    }
-});
 
 //12
 router.post("/assessment", verifyToken, async(req, res)=>{
     try{
-        const id_capaian = req.body.id_capaian ?? null;
+        const id_capaian_kelas = req.body.id_capaian_kelas ?? null;
         const nama_assessment = req.body.nama_assessment ?? null;
         const deskripsi = req.body.deskripsi ?? null;
         const bobot = req.body.bobot ?? null;
 
-        const [result] = await db.query("INSERT INTO assessment (id_capaian, nama_assessment, deskripsi, bobot) VALUES (?, ?, ?, ?)",
-        [id_capaian, nama_assessment, deskripsi, bobot]);
+        const [result] = await db.query("INSERT INTO assessment (id_capaian_kelas, nama_assessment, deskripsi, bobot) VALUES (?, ?, ?, ?)",
+        [id_capaian_kelas, nama_assessment, deskripsi, bobot]);
         res.status(200).json({
           success: true, 
           message: "Successfully add assessment", 

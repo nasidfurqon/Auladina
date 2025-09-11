@@ -172,22 +172,6 @@ router.get("/sub_elemen", verifyToken, async (req, res) => {
   }
 });
 
-//10
-router.get("/capaian", verifyToken, async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM capaian");
-    res.json({
-      success: true,
-      data: rows,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-});
 
 //11
 router.get("/assessment", verifyToken, async (req, res) => {

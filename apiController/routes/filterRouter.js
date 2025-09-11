@@ -28,25 +28,12 @@ router.get("/elemen/:id/sub-elemen", verifyToken, async (req, res) => {
   }
 });
 
-//capaian berdasarkan fase dan sub elemen
-router.get("/capaian", verifyToken, async (req, res) => {
-  const { id_fase, id_sub_elemen } = req.query;
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM capaian WHERE id_fase = ? AND id_sub_elemen = ?",
-      [id_fase, id_sub_elemen]
-    );
-    res.json({ success: true, data: rows });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
 
 //assessment berdasarkan capaian
-router.get("/capaian/:id/assessment", verifyToken, async (req, res) => {
+router.get("/capaian_kelas/:id/assessment", verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM assessment WHERE id_capaian = ?",
+      "SELECT * FROM assessment WHERE id_capaian_kelas = ?",
       [req.params.id]
     );
     res.json({ success: true, data: rows });
@@ -145,36 +132,33 @@ router.get("/nilai", verifyToken, async (req, res) => {
 });
 
 //nilai berdasarkan siswa dan capaian
-router.get(
-  "/siswa/:id_siswa/capaian/:id_capaian/nilai",
-  verifyToken,
-  async (req, res) => {
-    const { id_siswa, id_capaian } = req.params;
+router.get("/siswa/:id_siswa/capaian_kelas/:id_capaian_kelas/nilai", verifyToken, async (req, res) => {
+    const { id_siswa, id_capaian_kelas } = req.params;
 
     try {
       const [rows] = await db.query(
         `SELECT 
-         n.id_nilai,
-         n.nilai,
-         n.tanggal_input,
-         a.nama_assessment,
-         a.deskripsi AS deskripsi_assessment,
-         a.bobot
-       FROM nilai n
-       JOIN assessment a ON n.id_assessment = a.id_assessment
-       WHERE n.id_siswa = ? AND a.id_capaian = ?`,
-        [id_siswa, id_capaian]
+           n.id_nilai,
+           n.nilai,
+           n.tanggal_input,
+           a.nama_assessment,
+           a.deskripsi AS deskripsi_assessment,
+           a.bobot
+         FROM nilai n
+         JOIN assessment a ON n.id_assessment = a.id_assessment
+         WHERE n.id_siswa = ? 
+           AND a.id_capaian_kelas = ?`,
+        [id_siswa, id_capaian_kelas]
       );
 
       res.json({ success: true, data: rows });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal Server Error" });
+      res.status(500).json({ success: false, message: "Internal Server Error" });
     }
   }
 );
+
 
 // Ambil 5 pengisian nilai terakhir berdasarkan id_guru
 router.get("/history/:id_guru", async (req, res) => {
@@ -253,37 +237,34 @@ router.get("/guru/user/:user_id", verifyToken, async (req, res) => {
   }
 });
 
-// GET capaian_kelas by id_sub_elemen
-router.get("/capaian_kelas/sub_elemen/:id_sub_elemen/kelas/:id_kelas", verifyToken, async (req, res) => {
-    try {
-      const { id_sub_elemen, id_kelas } = req.params;
+// GET capaian_kelas by id_sub_elemen dan id_kelas
+router.get("/capaian_kelas/:id_sub_elemen/:id_kelas", verifyToken, async (req, res) => {
+  try {
+    const { id_sub_elemen, id_kelas } = req.params;
 
-      const [rows] = await db.query(
-        `SELECT ck.* 
-         FROM capaian_kelas ck
-         INNER JOIN capaian c ON ck.id_capaian = c.id_capaian
-         WHERE c.id_sub_elemen = ? 
-         AND ck.id_kelas = ?`,
-        [id_sub_elemen, id_kelas]
-      );
+    const [rows] = await db.query(
+      `SELECT ck.*, se.nama_sub_elemen, k.nama_kelas
+       FROM capaian_kelas ck
+       INNER JOIN sub_elemen se ON ck.id_sub_elemen = se.id_sub_elemen
+       INNER JOIN kelas k ON ck.id_kelas = k.id_kelas
+       WHERE ck.id_sub_elemen = ? AND ck.id_kelas = ?`,
+      [id_sub_elemen, id_kelas]
+    );
 
-      if (rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "No capaian_kelas found for this sub_elemen and sekolah",
-        });
-      }
-
-      res.json({ success: true, data: rows });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "No capaian_kelas found for this sub_elemen and kelas" });
     }
+
+    res.json({
+      success: true,
+      data: rows
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-);
+});
+
 
 router.get("/guru/siswa-belum-dinilai/:id_guru", verifyToken, async (req, res) => {
   try {

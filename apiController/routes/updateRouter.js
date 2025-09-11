@@ -370,38 +370,7 @@ router.put("/sub_elemen/:id", verifyToken, async (req, res) => {
     }
 });
 
-//11
-router.put("/capaian/:id", verifyToken, async (req, res) => {
-    const { id } = req.params;
 
-    try {
-        const [existingData] = await db.query(
-        "SELECT * FROM capaian WHERE id_capaian = ?",
-        [id]
-        );
-        if (existingData.length === 0) {
-        return res
-            .status(404)
-            .json({ success: false, message: "capaian not found" });
-        }
-        const id_sub_elemen = req.body.id_sub_elemen ?? existingData[0].id_sub_elemen;
-        const id_fase = req.body.id_fase ?? existingData[0].id_fase;
-        const deskripsi = req.body.deskripsi ?? existingData[0].deskripsi;
-
-        const [result] = await db.query(
-        "UPDATE capaian SET id_sub_elemen = ?, id_fase = ?, deskripsi = ? WHERE id_capaian = ?",
-        [id_sub_elemen, id_fase, deskripsi, id]
-        );
-        res.status(200).json({
-        success: true,
-        message: "Successfully update capaian",
-        affectedRows: result.affectedRows,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
 
 //12
 router.put("/assessment/:id", verifyToken, async (req, res) => {
