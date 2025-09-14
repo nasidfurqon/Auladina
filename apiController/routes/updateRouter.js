@@ -386,7 +386,7 @@ router.put("/assessment/:id", verifyToken, async (req, res) => {
             .status(404)
             .json({ success: false, message: "assessment not found" });
         }
-        const id_capaian = req.body.id_capaian ?? existingData[0].id_capaian;
+        const id_capaian_kelas = req.body.id_capaian_kelas ?? existingData[0].id_capaian_kelas;
         const nama_assessment = req.body.nama_assessment ?? existingData[0].nama_assessment;
         const deskripsi = req.body.deskripsi ?? existingData[0].deskripsi;
         const bobot = req.body.bobot ?? existingData[0].bobot;
@@ -453,14 +453,15 @@ router.put("/capaian_kelas/:id", verifyToken, async (req, res) => {
     const kode_ck = req.body.kode_ck ?? existing[0].kode_ck;
     const nama_ck = req.body.nama_ck ?? existing[0].nama_ck;
     const id_sekolah = req.body.id_sekolah ?? existing[0].id_sekolah;
-    const id_capaian = req.body.id_capaian ?? existing[0].id_capaian;
+    const id_sub_elemen = req.body.id_sub_elemen ?? existing[0].id_sub_elemen;
     const id_kelas = req.body.id_kelas ?? existing[0].id_kelas;
+    const indikator = req.body.indikator ?? existing[0].indikator;
 
     const [result] = await db.query(
       `UPDATE capaian_kelas 
-       SET kode_ck = ?, nama_ck = ?, id_sekolah = ?, id_capaian = ?, id_kelas = ?
+       SET kode_ck = ?, nama_ck = ?, id_sekolah = ?, id_sub_elemen = ?, id_kelas = ?, indikator = ?
        WHERE id = ?`,
-      [kode_ck, nama_ck, id_sekolah, id_capaian, id_kelas, id]
+      [kode_ck, nama_ck, id_sekolah, id_sub_elemen, id_kelas, indikator, id]
     );
 
     res.json({ success: true, message: "Successfully updated capaian_kelas", affectedRows: result.affectedRows });
