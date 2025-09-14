@@ -314,9 +314,9 @@ router.post("/capaian_kelas", verifyToken, async (req, res) => {
     const { kode_ck, nama_ck, id_kelas, id_capaian, id_sekolah } = req.body;
 
     const [result] = await db.query(
-      `INSERT INTO capaian_kelas (kode_ck, nama_ck, id_kelas, id_capaian, id_sekolah) 
+      `INSERT INTO capaian_kelas (kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah) 
        VALUES (?, ?, ?, ?, ?)`,
-      [kode_ck, nama_ck, id_kelas, id_capaian, id_sekolah]
+      [kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah]
     );
 
     res.status(200).json({
