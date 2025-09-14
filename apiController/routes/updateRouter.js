@@ -392,8 +392,8 @@ router.put("/assessment/:id", verifyToken, async (req, res) => {
         const bobot = req.body.bobot ?? existingData[0].bobot;
 
         const [result] = await db.query(
-        "UPDATE assessment SET id_capaian = ?, nama_assessment = ?, deskripsi = ?, bobot = ? WHERE id_assessment = ?",
-        [id_capaian, nama_assessment, deskripsi, bobot, id]
+        "UPDATE assessment SET id_capaian_kelas = ?, nama_assessment = ?, deskripsi = ?, bobot = ? WHERE id_assessment = ?",
+        [id_capaian_kelas, nama_assessment, deskripsi, bobot, id]
         );
         res.status(200).json({
         success: true,
