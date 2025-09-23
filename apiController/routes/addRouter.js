@@ -16,7 +16,7 @@ router.post("/guru", verifyToken, async (req, res) => {
       const id_sekolah = guru.id_sekolah ?? null;
       const nama = guru.nama ?? null;
       const nip = guru.nip ?? null;
-      values.push([id_sekolah, nama, nip, id_role]);
+      values.push([id_sekolah, nama, nip]);
     }
 
     const [result] = await db.query(
