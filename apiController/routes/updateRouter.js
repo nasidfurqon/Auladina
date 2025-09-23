@@ -19,10 +19,9 @@ router.put("/guru/:id", verifyToken, async(req, res)=>{
         const id_sekolah = req.body.id_sekolah ?? existingData[0].id_sekolah ;
         const nama = req.body.nama ?? existingData[0].nama;
         const nip = req.body.nip ?? existingData[0].nip;
-        const id_role = req.body.id_role ?? existingData[0].id_role;
 
-        const [result] = await db.query("UPDATE guru set id_sekolah = ?, nama = ?, nip = ?, id_role =  ? WHERE id_guru = ?",
-        [id_sekolah, nama, nip, id_role, id]);
+        const [result] = await db.query("UPDATE guru set id_sekolah = ?, nama = ?, nip = ? WHERE id_guru = ?",
+        [id_sekolah, nama, nip, id]);
         res.status(200).json({success: true, message: "Successfully update guru", affectedRows: result.affectedRows});
     }
     catch(error){
@@ -48,7 +47,8 @@ router.put("/users/:id", verifyToken, async (req, res) => {
     const password_hash =
       req.body.password_hash ?? existingData[0].password_hash;
     const update_at = new Date();
-
+    const id_role = req.body.id_role ?? existingData[0].id_role;
+    
     const hashed = req.body.password_hash
       ? await bcrypt.hash(password_hash, round)
       : password_hash;

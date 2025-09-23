@@ -16,12 +16,11 @@ router.post("/guru", verifyToken, async (req, res) => {
       const id_sekolah = guru.id_sekolah ?? null;
       const nama = guru.nama ?? null;
       const nip = guru.nip ?? null;
-      const id_role = guru.id_role ?? null;
       values.push([id_sekolah, nama, nip, id_role]);
     }
 
     const [result] = await db.query(
-      "INSERT INTO guru (id_sekolah, nama, nip, id_role) VALUES ?",
+      "INSERT INTO guru (id_sekolah, nama, nip) VALUES ?",
       [values]
     );
 
@@ -42,11 +41,12 @@ router.post("/users", verifyToken, async(req, res)=>{
         const email = req.body.email ?? null;
         const password_hash = req.body.password_hash ?? null;
         const created_at = new Date();
-
+        const id_role = guru.id_role ?? null;
+        
         const hashed = req.body.password_hash ? await bcrypt.hash(password_hash, round) : null;
 
-        const [result] = await db.query("INSERT INTO guru (email, password_hash, created_at) VALUES (?, ?, ?)",
-        [email, hashed, created_at]);
+        const [result] = await db.query("INSERT INTO guru (email, password_hash, created_at, id_role) VALUES (?, ?, ?, ?)",
+        [email, hashed, created_at, id_role]);
 
         res.status(200).json({
           success: true,  
