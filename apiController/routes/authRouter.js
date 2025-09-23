@@ -28,8 +28,8 @@ router.post("/register", async (req, res) => {
 
     const hashed = await bcrypt.hash(password_hash, round);
     const [result] = await db.query(
-      "INSERT INTO users (email, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?)",
-      [email, hashed, 0, new Date()]
+      "INSERT INTO users (email, password_hash, is_verified, created_at, id_role) VALUES (?, ?, ?, ?, ?)",
+      [email, hashed, 0, new Date(), 2]
     );
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {

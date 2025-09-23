@@ -36,6 +36,33 @@ router.post("/guru", verifyToken, async (req, res) => {
   }
 });
 
+router.post("/admin", verifyToken, async (req, res) => {
+  try {
+    const email = req.body.email ?? null;
+    const password_hash = req.body.password_hash ?? null;
+    const created_at = new Date();
+
+    const hashed = req.body.password_hash
+      ? await bcrypt.hash(password_hash, round)
+      : null;
+
+    const [result] = await db.query(
+      "INSERT INTO guru (email, password_hash, created_at, id_role) VALUES (?, ?, ?, ?)",
+      [email, hashed, created_at, 1]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully add admin",
+      insertedCount: result.affectedRows,
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 router.post("/users", verifyToken, async(req, res)=>{
     try{
         const email = req.body.email ?? null;
