@@ -47,8 +47,8 @@ router.post("/admin", verifyToken, async (req, res) => {
       : null;
 
     const [result] = await db.query(
-      "INSERT INTO guru (email, password_hash, created_at, id_role) VALUES (?, ?, ?, ?)",
-      [email, hashed, created_at, 1]
+      "INSERT INTO users (email, password_hash, created_at, id_role, is_verified, is_verified_nip) VALUES (?, ?, ?, ?, ?, ?)",
+      [email, hashed, created_at, 1, 1, 1]
     );
 
     res.status(200).json({
@@ -72,7 +72,7 @@ router.post("/users", verifyToken, async(req, res)=>{
         
         const hashed = req.body.password_hash ? await bcrypt.hash(password_hash, round) : null;
 
-        const [result] = await db.query("INSERT INTO guru (email, password_hash, created_at, id_role) VALUES (?, ?, ?, ?)",
+        const [result] = await db.query("INSERT INTO users(email, password_hash, created_at, id_role) VALUES (?, ?, ?, ?)",
         [email, hashed, created_at, id_role]);
 
         res.status(200).json({
