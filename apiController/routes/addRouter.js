@@ -15,12 +15,12 @@ router.post("/guru", verifyToken, async (req, res) => {
     for (const guru of guruList) {
       const id_sekolah = guru.id_sekolah ?? null;
       const nama = guru.nama ?? null;
-      const nip = guru.nip ?? null;
-      values.push([id_sekolah, nama, nip]);
+      const email = guru.email ?? null;
+      values.push([id_sekolah, nama, email]);
     }
 
     const [result] = await db.query(
-      "INSERT INTO guru (id_sekolah, nama, nip) VALUES ?",
+      "INSERT INTO guru (id_sekolah, nama, email) VALUES ?",
       [values]
     );
 

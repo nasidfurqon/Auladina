@@ -16,6 +16,13 @@ router.post("/register", async (req, res) => {
         .status(400)
         .json({ success: false, message: "email, password cant be empty" });
     }
+        
+    const [guru] = await db.query("SELECT * FROM guru WHERE email = ?", [email]);
+    if (guru.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email tidak terdaftar di data guru" });
+    }
 
     const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [
       email,
@@ -98,7 +105,6 @@ router.post("/verify_nip", verifyTokenNIP, async (req, res) => {
       {
         id: user.id_user,
         email: user.email,
-        is_verified_nip: 1,
         is_verified: 1,
       },
       process.env.JWT_SECRET,
@@ -142,8 +148,7 @@ router.post("/login", async (req, res) => {
       {
         id: user.id_user,
         email: user.email,
-        is_verified_nip: user.is_verified_nip,
-        is_verified: user.is_verified,
+        is_verified: user.is_verified,  
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
