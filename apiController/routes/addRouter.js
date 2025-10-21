@@ -184,7 +184,7 @@ router.post("/kelas", verifyToken, async (req, res) => {
 
       if (nama_guru) {
         const [rows] = await db.query(
-          "SELECT id FROM guru WHERE nama = ?",
+          "SELECT id_guru FROM guru WHERE nama = ?",
           [nama_guru]
         );
         if (rows.length > 0) {
