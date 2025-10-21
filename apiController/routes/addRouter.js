@@ -166,28 +166,64 @@ router.post("/siswa", verifyToken, async (req, res) => {
 });
 
 //5
-router.post("/kelas", verifyToken, async(req, res)=>{
-    try{
-        const id_sekolah = req.body.id_sekolah ?? null;
-        const id_fase = req.body.id_fase ?? null;
-        const nama_kelas = req.body.nama_kelas ?? null;
-        const tingkat = req.body.tingkat ?? null;
-        const tahun_ajaran = req.body.tahun_ajaran ?? null;
-        const id_wali_kelas = req.body.id_wali_kelas ?? null;
+router.post("/kelas", verifyToken, async (req, res) => {
+  try {
+    const kelasList = Array.isArray(req.body) ? req.body : [req.body];
 
-        const [result] = await db.query("INSERT INTO kelas (id_sekolah, id_fase, nama_kelas, tingkat, tahun_ajaran, id_wali_kelas) VALUES (?, ?, ?, ?, ?, ?)",
-        [id_sekolah, id_fase, nama_kelas, tingkat, tahun_ajaran, id_wali_kelas]);
-        res.status(200).json({
-          success: true, 
-          message: "Successfully add kelas", 
-          id: result.insertId
-        });
+    const values = [];
+
+    for (const kelas of kelasList) {
+      const id_sekolah = kelas.id_sekolah ?? null;
+      const id_fase = kelas.id_fase ?? null;
+      const nama_kelas = kelas.nama_kelas ?? null;
+      const tingkat = kelas.tingkat ?? null;
+      const tahun_ajaran = kelas.tahun_ajaran ?? null;
+
+      const nama_guru = kelas.nama_guru ?? null;
+      let id_wali_kelas = null;
+
+      if (nama_guru) {
+        const [rows] = await db.query(
+          "SELECT id FROM guru WHERE nama = ?",
+          [nama_guru]
+        );
+        if (rows.length > 0) {
+          id_wali_kelas = rows[0].id;
+        } else {
+          return res.status(400).json({
+            success: false,
+            message: `Guru dengan nama '${nama_guru}' tidak ditemukan`,
+          });
+        }
+      }
+
+      values.push([
+        id_sekolah,
+        id_fase,
+        nama_kelas,
+        tingkat,
+        tahun_ajaran,
+        id_wali_kelas,
+      ]);
     }
-    catch(error){
-        console.error(error);
-        res.status(500).json({success: false, message: "Internal server error"});
-    }
+
+    const [result] = await db.query(
+      "INSERT INTO kelas (id_sekolah, id_fase, nama_kelas, tingkat, tahun_ajaran, id_wali_kelas) VALUES ?",
+      [values]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully add kelas",
+      insertedCount: result.affectedRows,
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
+
 
 //6
 router.post("/pengampu", verifyToken, async(req, res)=>{
@@ -338,17 +374,28 @@ router.post("/nilai", verifyToken, async(req, res)=>{
 
 router.post("/capaian_kelas", verifyToken, async (req, res) => {
   try {
-    const { kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah, indikator } = req.body;
+    const capaianList = Array.isArray(req.body) ? req.body : [req.body];
+
+    const values = [];
+    for (const capaian of capaianList) {
+      const kode_ck = capaian.kode_ck ?? null;
+      const nama_ck = capaian.nama_ck ?? null;
+      const id_kelas = capaian.id_kelas ?? null;
+      const id_sub_elemen = capaian.id_sub_elemen ?? null;
+      const id_sekolah = capaian.id_sekolah ?? null;
+      const indikator = capaian.indikator ?? null;
+      values.push([kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah, indikator]);
+    }
 
     const [result] = await db.query(
-      `INSERT INTO capaian_kelas (kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah, indikator) 
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah, indikator]
+      "INSERT INTO capaian_kelas (kode_ck, nama_ck, id_kelas, id_sub_elemen, id_sekolah, indikator) VALUES ?",
+      [values]
     );
 
     res.status(200).json({
       success: true,
-      message: "Successfully added capaian_kelas",
+      message: "Successfully add capaian_kelas",
+      insertedCount: result.affectedRows,
       id: result.insertId,
     });
   } catch (error) {
@@ -356,5 +403,6 @@ router.post("/capaian_kelas", verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
 
 module.exports = router;
