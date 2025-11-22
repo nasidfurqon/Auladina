@@ -149,7 +149,7 @@ router.post("/login", async (req, res) => {
         id: user.id_user,
         email: user.email,
         is_verified: user.is_verified,
-        id_role: user.id_role // tambahkan id_role ke payload
+        id_role: user.id_role 
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -159,7 +159,7 @@ router.post("/login", async (req, res) => {
       success: true,
       message: "Login Successfull",
       token: token,
-      id_role: user.id_role // tambahkan id_role ke response
+      id_role: user.id_role 
     });
   } catch (err) {
     console.error(err);
