@@ -1,5 +1,13 @@
+
 const express = require("express");
+const cors = require("cors");
 const app = express();
+
+// Konfigurasi CORS agar frontend bisa akses backend
+app.use(cors({
+  origin: "http://localhost:5173", // sesuaikan dengan port frontend
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
